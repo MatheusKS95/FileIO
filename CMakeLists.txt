@@ -1,0 +1,29 @@
+cmake_minimum_required(VERSION 3.20)
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
+
+set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}" CACHE INTERNAL "")
+
+project(
+	Example
+	VERSION 0.0.1
+	LANGUAGES C
+)
+
+set(EXECUTABLE_NAME ${PROJECT_NAME})
+add_executable(${EXECUTABLE_NAME})
+
+#example
+target_sources(${EXECUTABLE_NAME}
+PRIVATE
+	example.c
+)
+
+add_subdirectory(fileio)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE fileio)
+
+add_custom_command(TARGET ${EXECUTABLE_NAME} POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/test $<TARGET_FILE_DIR:${EXECUTABLE_NAME}>/test
+)
